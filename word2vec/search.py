@@ -25,6 +25,8 @@ w /= s.reshape((s.shape[0], 1))  # normalize
 try:
     while True:
         q = six.moves.input('>> ')
+        if q == "exit":
+            break
         if q not in word2index:
             print('"{0}" is not found'.format(q))
             continue
