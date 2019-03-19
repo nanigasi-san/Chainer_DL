@@ -104,7 +104,7 @@ for epoch in range(15):
     print("epoch: {0}".format(epoch))
     indexes = np.random.permutation(datasize)
     for pos in range(0,datasize,bs):
-        print(epoch,pos)
+        print(epoch,pos/datasize)
         ids = indexes[pos:(pos+bs) if (pos+bs)<datasize else datasize]
         xb,yb,tb = make_batch_set(dataset,ids)
         model.zerograds()
