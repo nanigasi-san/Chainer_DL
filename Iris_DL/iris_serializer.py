@@ -35,11 +35,14 @@ class IrisChain(Chain):
 model = IrisChain()
 optimizer = optimizers.Adam()
 optimizer.setup(model)
+try:
+    serializers.load_npz("iris_model.npz",model)
+except FileNotFoundError:
+    pass
 
 for _ in range(1000):
     ok = 0
-    # serializers.load_npz("iris_model.npz",model)
-    for i in range(10):
+    for i in range(100):
         x = Variable(xtrain,)
         y = Variable(ytrain)
         model.zerograds()
