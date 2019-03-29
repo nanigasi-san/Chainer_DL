@@ -10,7 +10,7 @@ import collections
 index2word = {} #idから単語を取り出す
 word2index = {} #単語からidを取り出す
 counts = collections.Counter()
-dataset = [] #idのリスト　インデックスがコーパス内の単語の位置に対応している
+dataset = [] #idのリスト インデックスがコーパス内の単語の位置に対応している
 
 #データセット製作
 with open("word2vec/data/ptb.train.txt") as f:
@@ -95,7 +95,6 @@ def make_batch_set(dataset,ids):
                     xb.append(yid)
                     yb.append(nid)
                     tb.append(0)
-                    
     return [xb,yb,tb]
 
 #パラメータの更新
