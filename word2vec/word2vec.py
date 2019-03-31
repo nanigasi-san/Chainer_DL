@@ -13,7 +13,7 @@ counts = collections.Counter()
 dataset = [] #idのリスト インデックスがコーパス内の単語の位置に対応している
 
 #データセット製作
-with open("word2vec/data/ptb.train.txt") as f:
+with open("data/ptb.train.txt") as f:
     for line in f:
         for word in line.split():
             if word not in word2index:
