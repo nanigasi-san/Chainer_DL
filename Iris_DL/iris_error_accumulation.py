@@ -68,6 +68,6 @@ for i in range(nrow):
     if cls == yans[i]:
         ok += 1
 print("optimizer:Adam")
-print("{0}/{1} = {2}%".format(ok,nrow,(ok*1.0)/nrow)*100)
+print("{0}/{1} = {2}%".format(ok,nrow,((ok*1.0)/nrow)*100))
 print(accum_loss)
 print(ac)

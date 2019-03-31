@@ -60,4 +60,4 @@ for _ in range(1000):
         cls = np.argmax(ans[i,:])
         if cls == yans[i]:
             ok += 1
-    print("{0} : {1}/{2} = {3}%".format(_,ok,nrow,((ok*1.0)/nrow)*100))
+    print("{0} : {1}/{2} = {3}%".format(_,ok,nrow,(((ok*1.0)/nrow)*100)))
