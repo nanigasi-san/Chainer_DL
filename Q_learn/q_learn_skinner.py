@@ -10,7 +10,7 @@ def get_action(next_state,episode):
     if epsilon <= np.random.uniform(0,1):
         a = np.where(q_table[next_state]==q_table[next_state].max())[0]
         next_action = np.random.choice(a)
-    
+
     else:
         next_action = random_action()
 
