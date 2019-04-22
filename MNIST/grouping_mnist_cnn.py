@@ -6,27 +6,29 @@ from chainer import Link,Chain,ChainList
 import chainer.functions as F
 import chainer.links as L
 from chainer.training import extensions
-# import多くね
 
-train,test = datasets.get_mnist(ndim=3) #ネットワーク接続が必要
 
-class MnistModel(Chain):
+train,test = datasets.get_mnist(ndim=3)
+
+class MnistCNNModel(Chain):
     def __init__(self):
-        super(MnistModel,self).__init__(
-            l1 = L.Linear(784,100),
-            l2 = L.Linear(100,100),
-            l3 = L.Linear(100,10)
+        super(MnistCNNModel,self).__init__(
+            cn1 = L.Convolution2D(1,20,5),
+            cn2 = L.Convolution2D(20,50,5),
+            l1 = L.Linear(800,500),
+            l2 = L.Linear(500,10),
         )
-        
+
     def __call__(self,x,t):
         return F.softmax_cross_entropy(self.fwd(x),t)
-    
-    def fwd(self,x):
-        h1 = F.relu(self.l1(x))
-        h2 = F.relu(self.l2(h1))
-        return self.l3(h2)
 
-model = MnistModel()
+    def fwd(self,x):
+        h1 = F.max_pooling_2d(F.relu(self.cn1(x)),2)
+        h2 = F.max_pooling_2d(F.relu(self.cn2(h1)),2)
+        h3 = F.dropout(F.relu(self.l1(h2)))
+        return self.l2(h3)
+
+model = MnistCNNModel()
 optimizer = optimizers.Adam()
 optimizer.setup(model)
 
@@ -37,8 +39,8 @@ trainer.extend(extensions.ProgressBar())
 
 trainer.run() #学習開始
 
-serializers.save_npz("MNIST/model/mnist_nn.model",model)#ここをコメントアウトすると前回の続きからになる
-serializers.load_npz("MNIST/model/mnist_nn.model",model)
+serializers.save_npz("MNIST/model/mnist_cnn.model",model)#ここをコメントアウトすると前回の続きからになる
+serializers.load_npz("MNIST/model/mnist_cnn.model",model)
 
 #評価部分
 ok = 0
