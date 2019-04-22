@@ -37,8 +37,8 @@ trainer.extend(extensions.ProgressBar())
 
 trainer.run() #学習開始
 
-serializers.save_npz("MNIST/model/mnist_model.model",model)
-serializers.load_npz("MNIST/model/mnist_model.model",model)
+serializers.save_npz("MNIST/model/mnist_nn.model",model)
+serializers.load_npz("MNIST/model/mnist_nn.model",model)
 
 #評価部分
 ok = 0
