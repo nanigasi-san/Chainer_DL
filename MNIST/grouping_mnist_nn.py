@@ -1,8 +1,7 @@
 import numpy as np
-import chainer
-from chainer import cuda,Function,report,training,utils,Variable
+from chainer import training,Variable
 from chainer import datasets,iterators,optimizers,serializers
-from chainer import Link,Chain,ChainList
+from chainer import Chain
 import chainer.functions as F
 import chainer.links as L
 from chainer.training import extensions
@@ -17,10 +16,10 @@ class MnistModel(Chain):
             l2 = L.Linear(100,100),
             l3 = L.Linear(100,10)
         )
-        
+
     def __call__(self,x,t):
         return F.softmax_cross_entropy(self.fwd(x),t)
-    
+
     def fwd(self,x):
         h1 = F.relu(self.l1(x))
         h2 = F.relu(self.l2(h1))
