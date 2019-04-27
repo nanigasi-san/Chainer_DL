@@ -1,3 +1,4 @@
+# In[]:
 import numpy as np
 from chainer import training,Variable
 from chainer import datasets,iterators,optimizers,serializers
@@ -5,31 +6,36 @@ from chainer import Chain
 import chainer.functions as F
 import chainer.links as L
 from chainer.training import extensions
-from make_datasets import make_tupledata_set_train,make_tupledata_set_test
-from time import time
+import sys
+sys.path.append("NotMnist/")
+from make_datasets_cnn import make_tupledata_set
+from time import time,sleep
 
-def grouping_notmnist(size):
+# In[]:
+def grouping_notmnist_cnn(size):
     start = time()
-    train = make_tupledata_set_train(size=size)
-    test = make_tupledata_set_test(size=1000)
+    train = make_tupledata_set(size=size)
+    test = make_tupledata_set(size=100)
 
-    class MnistModel(Chain):
+    class notMnistCNNModel(Chain):
         def __init__(self):
-            super(MnistModel,self).__init__(
-                l1 = L.Linear(784,100),
-                l2 = L.Linear(100,100),
-                l3 = L.Linear(100,10)
+            super(notMnistCNNModel,self).__init__(
+                cn1 = L.Convolution2D(1,20,5),
+                cn2 = L.Convolution2D(20,50,5),
+                l1 = L.Linear(800,500),
+                l2 = L.Linear(500,10),
             )
 
         def __call__(self,x,t):
             return F.softmax_cross_entropy(self.fwd(x),t)
 
         def fwd(self,x):
-            h1 = F.relu(self.l1(x))
-            h2 = F.relu(self.l2(h1))
-            return self.l3(h2)
+            h1 = F.max_pooling_2d(F.relu(self.cn1(x)),2)
+            h2 = F.max_pooling_2d(F.relu(self.cn2(h1)),2)
+            h3 = F.dropout(F.relu(self.l1(h2)))
+            return self.l2(h3)
 
-    model = MnistModel()
+    model = notMnistCNNModel()
     optimizer = optimizers.Adam()
     optimizer.setup(model)
 
@@ -39,8 +45,8 @@ def grouping_notmnist(size):
 
     trainer.run() #学習開始
 
-    serializers.save_npz("notMNIST/model/notmnist_nn.model",model)#ここをコメントアウトすると前回の続きからになる
-    serializers.load_npz("notMNIST/model/notmnist_nn.model",model)
+    # serializers.save_npz("notMNIST/model/notmnist_cnn.model",model)#ここをコメントアウトすると前回の続きからになる
+    # serializers.load_npz("notMNIST/model/notmnist_cnn.model",model)
 
     #評価部分
     ok = 0
@@ -57,7 +63,8 @@ def grouping_notmnist(size):
     print((ok/len(test))*100,"%")
     print("time: ",int(finish-start),"s","\n")
 
-grouping_notmnist(10)
-# grouping_notmnist(100)
-# grouping_notmnist(1000)
-# grouping_notmnist(10000)
+# In[]:
+grouping_notmnist_cnn(10)
+grouping_notmnist_cnn(100)
+grouping_notmnist_cnn(1000)
+grouping_notmnist_cnn(10000)
