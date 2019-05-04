@@ -48,7 +48,7 @@ def step(state, action):
 gamma = 0.9
 alpha = 0.5
 max_number_of_steps = 5  # 1試行のstep数
-num_episodes = 100  # 総試行回数
+num_episodes = 1000  # 総試行回数
 
 q_func = QFunction(1, 2)
 optimizer = optimizers.Adam(eps=1e-2)
@@ -86,8 +86,8 @@ for episode in range(num_episodes):
     agent.stop_episode_and_train(state, reward, done)
     # print("episode : {0} ,total reward : {1}".format(episode,R))
     Rlist.append(R)
-agent.save("DQN/skinner_agent")
+agent.save("DQN/skinner_agent_{0}".format(num_episodes))
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.plot(np.array(Rlist))
-plt.savefig("DQN/image/100.png", dpi=1000)
+plt.savefig("DQN/image/{0}.png".format(num_episodes), dpi=1000)
