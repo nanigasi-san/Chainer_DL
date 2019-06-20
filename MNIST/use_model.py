@@ -4,11 +4,16 @@ from chainer import datasets,iterators,optimizers,serializers
 from chainer import Chain
 import chainer.functions as F
 import chainer.links as L
+from chainer.datasets import TupleDataset
 from chainer.training import extensions
+from PIL import Image
 # import多くね
 
-train,test = datasets.get_mnist(ndim=3) #ネットワーク接続が必要
-print(train[0][0].shape)
+test = np.array(Image.open("MNIST/image/14x5.png"))
+test = test.reshape(1,28,28)
+test.shape
+x = Variable(np.array(test,dtype=np.float32))
+x /= 255
 class MnistModel(Chain):
     def __init__(self):
         super(MnistModel,self).__init__(
@@ -26,27 +31,14 @@ class MnistModel(Chain):
         return self.l3(h2)
 
 model = MnistModel()
-serializers.load_npz("MNIST/model/mnist_nn.model",model)
 optimizer = optimizers.Adam()
 optimizer.setup(model)
 
-iterator = iterators.SerialIterator(train,1000)
-updater = training.StandardUpdater(iterator,optimizer)
-trainer = training.Trainer(updater,(10,"epoch"))
-trainer.extend(extensions.ProgressBar())
-
-trainer.run() #学習開始
 
 # serializers.save_npz("MNIST/model/mnist_nn.model",model)#ここをコメントアウトすると前回の続きからになる
+serializers.load_npz("MNIST/model/mnist_nn.model",model)
 
-#評価部分
-ok = 0
-for i in range(len(test)):
-    x = Variable(np.array([test[i][0]],dtype=np.float32))
-    t = test[i][1]
-    out = model.fwd(x)
-    ans = np.argmax(out.data)
-    if (ans==t):
-        ok += 1
+out = model.fwd(x)
+ans = np.argmax(out.data)
 
-print((ok/len(test))*100,"%")
+print(ans)
